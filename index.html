@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8">
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <title>ToDo</title>
+    <style>
+        .ToDo {
+            margin: auto;
+            width: 15%;
+            padding: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div id="react-container"></div>
+    <script type="text/babel">
+        const { Component } = React
+        const { render } = ReactDOM
+
+        class ToDo extends Component {
+            constructor(props) {
+                super(props)
+                this.state = {
+                    listItems: ["First Activity", "Second Activity "],
+                    textColor: "Black"
+                }
+                this.addItem = this.addItem.bind(this)
+                this.checkItem = this.checkItem.bind(this)
+                this.deleteItem = this.deleteItem.bind(this)
+            }
+
+            addItem(event) {
+                const newItem = this._inputElement.value
+                this.setState((prevState) => ({
+                    listItems: prevState.listItems.concat(newItem)
+                }))
+                this._inputElement.value = ""
+                event.preventDefault()
+            }
+
+            checkItem(event) {
+                const { listItems } = this.state
+                const currentText = event.target.value
+                if(listItems.includes(currentText)) {
+                    this.setState({ textColor: "Red" })
+                } else {
+                    this.setState({ textColor: "Black" })
+                }
+                    
+            }
+
+            deleteItem(key) {
+                const { listItems } = this.state
+                this.setState((prevState) => ({
+                    listItems: prevState.listItems.filter((item, index) =>
+                    index !== key
+                )
+                }))
+            }
+
+            render() {
+                const { listItems, textColor } = this.state
+                return (
+                    <div className="ToDo">
+                        <form onSubmit={this.addItem}>
+                            <input style={{ color: textColor }} onChange={this.checkItem} ref={(a) => this._inputElement = a}
+                                placeholder="Enter Task">
+                            </input>
+                            <button type="submit">Add</button>
+                        </form>
+                        <ul>
+                            {listItems.map((item, index) =>
+                                <li key={index} onClick={() => this.deleteItem(index)}>{item}</li>
+                            )}
+                        </ul>
+                    </div>
+                )
+            }
+        }
+
+        render(<ToDo />, document.getElementById('react-container'))
+
+    </script>
+</body>
+
+</html>
